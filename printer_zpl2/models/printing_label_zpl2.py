@@ -42,6 +42,10 @@ class PrintingLabelZpl2(models.Model):
     menu_ir_values_id = fields.Many2one(
         comodel_name='ir.values', string='More Menu entry',
         readonly=True, help='More menu entry.', copy=False)
+    restore_saved_config = fields.Boolean(
+        string="Restore printer's configuration",
+        help="Restore printer's saved configuration and end of each label ",
+        default=True)
 
     @api.multi
     def _generate_zpl2_components_data(
@@ -170,7 +174,8 @@ class PrintingLabelZpl2(models.Model):
                 page_count=page_count)
 
             # Restore printer's configuration and end the label
-            label_data.configuration_update(zpl2.CONF_RECALL_LAST_SAVED)
+            if self.restore_saved_config:
+                label_data.configuration_update(zpl2.CONF_RECALL_LAST_SAVED)
             label_data.label_end()
 
         return label_data.output()
