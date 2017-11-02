@@ -2,12 +2,16 @@
 # Copyright (C) 2016 SYLEAM (<http://www.syleam.fr>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+import base64
 import time
+import io
 import datetime
 import logging
-from odoo import api, exceptions, fields, models
-from odoo.tools.translate import _
-from odoo.tools.safe_eval import safe_eval
+from PIL import Image
+
+from openerp import api, exceptions, fields, models
+from openerp.tools.translate import _
+from openerp.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
 
@@ -34,7 +38,7 @@ class PrintingLabelZpl2(models.Model):
         help='Origin point of the contents in the label, Y coordinate.')
     width = fields.Integer(
         required=True, default=480,
-        help='Width of the label, will be set on the printer before printing.')
+        help='With of the label, will be set on the printer before printing.')
     component_ids = fields.One2many(
         comodel_name='printing.label.zpl2.component', inverse_name='label_id',
         string='Label Components',
@@ -113,6 +117,16 @@ class PrintingLabelZpl2(models.Model):
                         zpl2.ARG_COLOR: component.color,
                         zpl2.ARG_ROUNDING: component.rounding,
                     })
+            elif component.component_type == 'graphic':
+                pil_image = Image.open(
+                    io.BytesIO(
+                        base64.decodestring(
+                            component.graphic_image or data
+                        )))
+                label_data.graphic_image(
+                    component_offset_x, component_offset_y,
+                    pil_image
+                )
             elif component.component_type == 'circle':
                 label_data.graphic_circle(
                     component_offset_x, component_offset_y, {
