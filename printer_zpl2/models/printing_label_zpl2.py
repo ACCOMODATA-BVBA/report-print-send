@@ -15,7 +15,7 @@ from openerp.tools.translate import _
 _logger = logging.getLogger(__name__)
 
 try:
-    import zpl2
+    from . import zpl2
 except ImportError:
     _logger.debug('Cannot `import zpl2`.')
 
