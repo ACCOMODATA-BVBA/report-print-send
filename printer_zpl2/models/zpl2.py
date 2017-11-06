@@ -464,7 +464,7 @@ class Zpl2(object):
         # the first row of the array, is the first line of pixels in the
         # image
         # Fill all values with white
-        pixels = [[1 for x in range(0, row_size)] for y in range(0, sizey)]
+        pixels = [[0 for x in range(0, row_size)] for y in range(0, sizey)]
         for xpos in range(0, sizex):
             for ypos in range(0, sizey):
                 input_value = data[xpos, ypos]
