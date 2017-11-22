@@ -69,9 +69,9 @@ class PrintingLabelZpl2Component(models.Model):
     orientation = fields.Selection(
         selection=[
             (zpl2.ORIENTATION_NORMAL, 'Normal'),
-            (zpl2.ORIENTATION_ROTATED, 'Rotated'),
-            (zpl2.ORIENTATION_INVERTED, 'Inverted'),
-            (zpl2.ORIENTATION_BOTTOM_UP, 'Read from Bottom up'),
+            (zpl2.ORIENTATION_ROTATED, 'Rotated - 90°'),
+            (zpl2.ORIENTATION_INVERTED, 'Inverted - 180°'),
+            (zpl2.ORIENTATION_BOTTOM_UP, 'Read from Bottom up - 270°'),
         ], required=True, default=zpl2.ORIENTATION_NORMAL,
         help='Orientation of the barcode.')
     check_digits = fields.Boolean(
