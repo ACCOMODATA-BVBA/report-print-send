@@ -43,6 +43,16 @@ class PrintingLabelZpl2(models.Model):
         string="Restore printer's configuration",
         help="Restore printer's saved configuration and end of each label ",
         default=True)
+    multilabel = fields.Boolean(
+        string='Multilabel',
+        help='Print multiple labels at once.')
+    multilabel_count = fields.Integer(
+        default=1,
+        help='Number of labels to print at once')
+    multilabel_offset_x = fields.Integer(
+        help='X coordinate offset between each occurence.')
+    multilabel_offset_y = fields.Integer(
+        help='Y coordinate offset between each occurence.')
 
     @api.multi
     def _generate_zpl2_components_data(
@@ -154,40 +164,63 @@ class PrintingLabelZpl2(models.Model):
                     component.component_type, barcode_arguments, data)
 
     @api.multi
-    def _generate_zpl2_data(self, record, page_count=1, **extra):
+    def _generate_zpl2_data(self, records, page_count=1, **extra):
         self.ensure_one()
         label_data = zpl2.Zpl2()
 
-        for page_number in range(page_count):
-            # Initialize printer's configuration
-            label_data.label_start()
-            label_data.print_width(self.width)
-            label_data.label_encoding()
+        multilabel_index = 0
 
-            label_data.label_home(self.origin_x, self.origin_y)
+        for record in records:
+            for page_number in range(page_count):
+                if multilabel_index == 0:
+                    # Initialize printer's configuration
+                    label_data.label_start()
+                    label_data.print_width(self.width)
+                    label_data.label_encoding()
 
-            self._generate_zpl2_components_data(
-                label_data, record, page_number=page_number,
-                page_count=page_count, **extra)
+                origin_x = (
+                    self.origin_x + self.multilabel_offset_x
+                    * multilabel_index
+                )
+                origin_y = (
+                    self.origin_y + self.multilabel_offset_y
+                    * multilabel_index
+                )
+                label_data.label_home(origin_x, origin_y)
 
-            # Restore printer's configuration and end the label
+                self._generate_zpl2_components_data(
+                    label_data, record, page_number=page_number,
+                    page_count=page_count)
+
+                if self.multilabel:
+                    multilabel_index = (
+                        multilabel_index + 1) % self.multilabel_count
+
+                # Restore printer's configuration and end the label
+                if multilabel_index == 0:
+                    if self.restore_saved_config:
+                        label_data.configuration_update(
+                            zpl2.CONF_RECALL_LAST_SAVED)
+                    label_data.label_end()
+
+        # ensure the label is properly closed.
+        if multilabel_index != 0:
             if self.restore_saved_config:
                 label_data.configuration_update(zpl2.CONF_RECALL_LAST_SAVED)
             label_data.label_end()
-
         return label_data.output()
 
     @api.multi
-    def print_label(self, printer, record, page_count=1, **extra):
+    def print_label(self, printer, records, page_count=1, **extra):
         for label in self:
-            if record._name != label.model_id.model:
+            if records._name != label.model_id.model:
                 raise exceptions.UserError(
                     _('This label cannot be used on {model}').format(
-                        model=record._name))
+                        model=records._name))
 
             # Send the label to printer
             label_contents = label._generate_zpl2_data(
-                record, page_count=page_count, **extra)
+                records, page_count=page_count, **extra)
             printer.print_document(None, label_contents, 'raw')
 
         return True
