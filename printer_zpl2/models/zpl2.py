@@ -5,79 +5,79 @@
 from PIL import Image
 
 # Constants for the printer configuration management
-CONF_RELOAD_FACTORY = 'F'
-CONF_RELOAD_NETWORK_FACTORY = 'N'
-CONF_RECALL_LAST_SAVED = 'R'
-CONF_SAVE_CURRENT = 'S'
+CONF_RELOAD_FACTORY = u'F'
+CONF_RELOAD_NETWORK_FACTORY = u'N'
+CONF_RECALL_LAST_SAVED = u'R'
+CONF_SAVE_CURRENT = u'S'
 
 # Command arguments names
-ARG_FONT = 'font'
-ARG_HEIGHT = 'height'
-ARG_WIDTH = 'width'
-ARG_ORIENTATION = 'orientation'
-ARG_THICKNESS = 'thickness'
-ARG_BLOCK_WIDTH = 'block_width'
-ARG_BLOCK_LINES = 'block_lines'
-ARG_BLOCK_SPACES = 'block_spaces'
-ARG_BLOCK_JUSTIFY = 'block_justify'
-ARG_BLOCK_LEFT_MARGIN = 'block_left_margin'
-ARG_CHECK_DIGITS = 'check_digits'
-ARG_INTERPRETATION_LINE = 'interpretation_line'
-ARG_INTERPRETATION_LINE_ABOVE = 'interpretation_line_above'
-ARG_STARTING_MODE = 'starting_mode'
-ARG_SECURITY_LEVEL = 'security_level'
-ARG_COLUMNS_COUNT = 'columns_count'
-ARG_ROWS_COUNT = 'rows_count'
-ARG_TRUNCATE = 'truncate'
-ARG_MODE = 'mode'
-ARG_MODULE_WIDTH = 'module_width'
-ARG_BAR_WIDTH_RATIO = 'bar_width_ratio'
-ARG_REVERSE_PRINT = 'reverse_print'
-ARG_IN_BLOCK = 'in_block'
-ARG_COLOR = 'color'
-ARG_ROUNDING = 'rounding'
-ARG_DIAMETER = 'diameter'
+ARG_FONT = u'font'
+ARG_HEIGHT = u'height'
+ARG_WIDTH = u'width'
+ARG_ORIENTATION = u'orientation'
+ARG_THICKNESS = u'thickness'
+ARG_BLOCK_WIDTH = u'block_width'
+ARG_BLOCK_LINES = u'block_lines'
+ARG_BLOCK_SPACES = u'block_spaces'
+ARG_BLOCK_JUSTIFY = u'block_justify'
+ARG_BLOCK_LEFT_MARGIN = u'block_left_margin'
+ARG_CHECK_DIGITS = u'check_digits'
+ARG_INTERPRETATION_LINE = u'interpretation_line'
+ARG_INTERPRETATION_LINE_ABOVE = u'interpretation_line_above'
+ARG_STARTING_MODE = u'starting_mode'
+ARG_SECURITY_LEVEL = u'security_level'
+ARG_COLUMNS_COUNT = u'columns_count'
+ARG_ROWS_COUNT = u'rows_count'
+ARG_TRUNCATE = u'truncate'
+ARG_MODE = u'mode'
+ARG_MODULE_WIDTH = u'module_width'
+ARG_BAR_WIDTH_RATIO = u'bar_width_ratio'
+ARG_REVERSE_PRINT = u'reverse_print'
+ARG_IN_BLOCK = u'in_block'
+ARG_COLOR = u'color'
+ARG_ROUNDING = u'rounding'
+ARG_DIAMETER = u'diameter'
 
 # Boolean values
-BOOL_YES = 'Y'
-BOOL_NO = 'N'
+BOOL_YES = u'Y'
+BOOL_NO = u'N'
 
 # Orientation values
-ORIENTATION_NORMAL = 'N'
-ORIENTATION_ROTATED = 'R'
-ORIENTATION_INVERTED = 'I'
-ORIENTATION_BOTTOM_UP = 'B'
+ORIENTATION_NORMAL = u'N'
+ORIENTATION_ROTATED = u'R'
+ORIENTATION_INVERTED = u'I'
+ORIENTATION_BOTTOM_UP = u'B'
 
 # Justify values
-JUSTIFY_LEFT = 'L'
-JUSTIFY_CENTER = 'C'
-JUSTIFY_JUSTIFIED = 'J'
-JUSTIFY_RIGHT = 'R'
+JUSTIFY_LEFT = u'L'
+JUSTIFY_CENTER = u'C'
+JUSTIFY_JUSTIFIED = u'J'
+JUSTIFY_RIGHT = u'R'
 
 # Font values
-FONT_DEFAULT = '0'
-FONT_9X5 = 'A'
-FONT_11X7 = 'B'
-FONT_18X10 = 'D'
-FONT_28X15 = 'E'
-FONT_26X13 = 'F'
-FONT_60X40 = 'G'
-FONT_21X13 = 'H'
+FONT_DEFAULT = u'0'
+FONT_9X5 = u'A'
+FONT_11X7 = u'B'
+FONT_18X10 = u'D'
+FONT_28X15 = u'E'
+FONT_26X13 = u'F'
+FONT_60X40 = u'G'
+FONT_21X13 = u'H'
 
 # Color values
-COLOR_BLACK = 'B'
-COLOR_WHITE = 'W'
+COLOR_BLACK = u'B'
+COLOR_WHITE = u'W'
 
 # Barcode types
-BARCODE_CODE_11 = 'code_11'
-BARCODE_INTERLEAVED_2_OF_5 = 'interleaved_2_of_5'
-BARCODE_CODE_39 = 'code_39'
-BARCODE_CODE_49 = 'code_49'
-BARCODE_PDF417 = 'pdf417'
-BARCODE_EAN_8 = 'ean-8'
-BARCODE_UPC_E = 'upc-e'
-BARCODE_CODE_128 = 'code_128'
-BARCODE_EAN_13 = 'ean-13'
+BARCODE_CODE_11 = u'code_11'
+BARCODE_INTERLEAVED_2_OF_5 = u'interleaved_2_of_5'
+BARCODE_CODE_39 = u'code_39'
+BARCODE_CODE_49 = u'code_49'
+BARCODE_PDF417 = u'pdf417'
+BARCODE_EAN_8 = u'ean-8'
+BARCODE_UPC_E = u'upc-e'
+BARCODE_CODE_128 = u'code_128'
+BARCODE_EAN_13 = u'ean-13'
 
 
 class Zpl2(object):
@@ -94,7 +94,7 @@ class Zpl2(object):
 
     def output(self):
         """ Return the full contents to send to the printer """
-        return '\n'.encode(self.encoding).join(self._buffer)
+        return u'\n'.encode(self.encoding).join(self._buffer)
 
     def _enforce(self, value, minimum=1, maximum=32000):
         """ Returns the value, forced between minimum and maximum """
@@ -120,39 +120,39 @@ class Zpl2(object):
                 command_arguments.append(kwargs[argument])
 
         # Return a zebra formatted string, with a comma between each argument
-        return ','.join(map(str, command_arguments))
+        return u','.join(map(str, command_arguments))
 
     def print_width(self, label_width):
         """ Defines the print width setting on the printer """
-        self._write_command('^PW%d' % label_width)
+        self._write_command(u'^PW%d' % label_width)
 
     def configuration_update(self, active_configuration):
         """ Set the active configuration on the printer """
-        self._write_command('^JU%s' % active_configuration)
+        self._write_command(u'^JU%s' % active_configuration)
 
     def label_start(self):
         """ Adds the label start command to the buffer """
-        self._write_command('^XA')
+        self._write_command(u'^XA')
 
     def label_encoding(self):
         """ Adds the label encoding command to the buffer
         Fixed value defined to UTF-8
         """
-        self._write_command('^CI28')
+        self._write_command(u'^CI28')
 
     def label_end(self):
         """ Adds the label start command to the buffer """
-        self._write_command('^XZ')
+        self._write_command(u'^XZ')
 
     def label_home(self, left, top):
         """ Define the label top left corner """
-        self._write_command('^LH%d,%d' % (left, top))
+        self._write_command(u'^LH%d,%d' % (left, top))
 
     def _field_origin(self, right, down):
         """ Define the top left corner of the data, from the top left corner of
         the label
         """
-        return '^FO%d,%d' % (right, down)
+        return u'^FO%d,%d' % (right, down)
 
     def _font_format(self, font_format):
         """ Send the commands which define the font to use for the current data
@@ -175,7 +175,7 @@ class Zpl2(object):
                 font_format[ARG_WIDTH], minimum=10)
 
         # Generate the ZPL II command
-        return '^A' + self._generate_arguments(arguments, font_format)
+        return u'^A' + self._generate_arguments(arguments, font_format)
 
     def _field_block(self, block_format):
         """ Define a maximum width to print some data """
@@ -186,7 +186,7 @@ class Zpl2(object):
             ARG_BLOCK_JUSTIFY,
             ARG_BLOCK_LEFT_MARGIN,
         ]
-        return '^FB' + self._generate_arguments(arguments, block_format)
+        return u'^FB' + self._generate_arguments(arguments, block_format)
 
     def _barcode_format(self, barcodeType, barcode_format):
         """ Generate the commands to print a barcode
@@ -200,7 +200,7 @@ class Zpl2(object):
                 ARG_INTERPRETATION_LINE,
                 ARG_INTERPRETATION_LINE_ABOVE,
             ]
-            return '1' + self._generate_arguments(arguments, kwargs)
+            return u'1' + self._generate_arguments(arguments, kwargs)
 
         def _interleaved2of5(**kwargs):
             arguments = [
@@ -210,7 +210,7 @@ class Zpl2(object):
                 ARG_INTERPRETATION_LINE_ABOVE,
                 ARG_CHECK_DIGITS,
             ]
-            return '2' + self._generate_arguments(arguments, kwargs)
+            return u'2' + self._generate_arguments(arguments, kwargs)
 
         def _code39(**kwargs):
             arguments = [
@@ -220,7 +220,7 @@ class Zpl2(object):
                 ARG_INTERPRETATION_LINE,
                 ARG_INTERPRETATION_LINE_ABOVE,
             ]
-            return '3' + self._generate_arguments(arguments, kwargs)
+            return u'3' + self._generate_arguments(arguments, kwargs)
 
         def _code49(**kwargs):
             arguments = [
@@ -235,14 +235,14 @@ class Zpl2(object):
                 if kwargs[ARG_INTERPRETATION_LINE]:
                     if kwargs[ARG_INTERPRETATION_LINE_ABOVE]:
                         # Interpretation line after
-                        kwargs[ARG_INTERPRETATION_LINE] = 'A'
+                        kwargs[ARG_INTERPRETATION_LINE] = u'A'
                     else:
                         # Interpretation line before
-                        kwargs[ARG_INTERPRETATION_LINE] = 'B'
+                        kwargs[ARG_INTERPRETATION_LINE] = u'B'
                 else:
                     # No interpretation line
-                    kwargs[ARG_INTERPRETATION_LINE] = 'N'
-            return '4' + self._generate_arguments(arguments, kwargs)
+                    kwargs[ARG_INTERPRETATION_LINE] = u'N'
+            return u'4' + self._generate_arguments(arguments, kwargs)
 
         def _pdf417(**kwargs):
             arguments = [
@@ -253,7 +253,7 @@ class Zpl2(object):
                 ARG_ROWS_COUNT,
                 ARG_TRUNCATE,
             ]
-            return '7' + self._generate_arguments(arguments, kwargs)
+            return u'7' + self._generate_arguments(arguments, kwargs)
 
         def _ean8(**kwargs):
             arguments = [
@@ -262,7 +262,7 @@ class Zpl2(object):
                 ARG_INTERPRETATION_LINE,
                 ARG_INTERPRETATION_LINE_ABOVE,
             ]
-            return '8' + self._generate_arguments(arguments, kwargs)
+            return u'8' + self._generate_arguments(arguments, kwargs)
 
         def _upce(**kwargs):
             arguments = [
@@ -272,7 +272,7 @@ class Zpl2(object):
                 ARG_INTERPRETATION_LINE_ABOVE,
                 ARG_CHECK_DIGITS,
             ]
-            return '9' + self._generate_arguments(arguments, kwargs)
+            return u'9' + self._generate_arguments(arguments, kwargs)
 
         def _code128(**kwargs):
             arguments = [
@@ -283,7 +283,7 @@ class Zpl2(object):
                 ARG_CHECK_DIGITS,
                 ARG_MODE,
             ]
-            return 'C' + self._generate_arguments(arguments, kwargs)
+            return u'C' + self._generate_arguments(arguments, kwargs)
 
         def _ean13(**kwargs):
             arguments = [
@@ -292,7 +292,7 @@ class Zpl2(object):
                 ARG_INTERPRETATION_LINE,
                 ARG_INTERPRETATION_LINE_ABOVE,
             ]
-            return 'E' + self._generate_arguments(arguments, kwargs)
+            return u'E' + self._generate_arguments(arguments, kwargs)
 
         barcodeTypes = {
             BARCODE_CODE_11: _code11,
@@ -305,7 +305,7 @@ class Zpl2(object):
             BARCODE_CODE_128: _code128,
             BARCODE_EAN_13: _ean13,
         }
-        return '^B' + barcodeTypes[barcodeType](**barcode_format)
+        return u'^B' + barcodeTypes[barcodeType](**barcode_format)
 
     def _barcode_field_default(self, barcode_format):
         """ Add the data start command to the buffer """
@@ -313,24 +313,24 @@ class Zpl2(object):
             ARG_MODULE_WIDTH,
             ARG_BAR_WIDTH_RATIO,
         ]
-        return '^BY' + self._generate_arguments(arguments, barcode_format)
+        return u'^BY' + self._generate_arguments(arguments, barcode_format)
 
     def _field_data_start(self):
         """ Add the data start command to the buffer """
-        return '^FD'
+        return u'^FD'
 
     def _field_reverse_print(self):
         """ Allows the printed data to appear white over black, or black over white
         """
-        return '^FR'
+        return u'^FR'
 
     def _field_data_stop(self):
         """ Add the data stop command to the buffer """
-        return '^FS'
+        return u'^FS'
 
     def _field_data(self, data):
         """ Add data to the buffer, between start and stop commands """
-        command = '{start}{data}{stop}'.format(
+        command = u'{start}{data}{stop}'.format(
             start=self._field_data_start(),
             data=data,
             stop=self._field_data_stop(),
@@ -339,14 +339,14 @@ class Zpl2(object):
 
     def font_data(self, right, down, field_format, data):
         """ Add a full text in the buffer, with needed formatting commands """
-        reverse = ''
+        reverse = u''
         if field_format.get(ARG_REVERSE_PRINT, False):
             reverse = self._field_reverse_print()
-        block = ''
+        block = u''
         if field_format.get(ARG_IN_BLOCK, False):
             block = self._field_block(field_format)
 
-        command = '{origin}{font_format}{reverse}{block}{data}'.format(
+        command = u'{origin}{font_format}{reverse}{block}{data}'.format(
             origin=self._field_origin(right, down),
             font_format=self._font_format(field_format),
             reverse=reverse,
@@ -358,7 +358,7 @@ class Zpl2(object):
     def barcode_data(self, right, down, barcodeType, barcode_format, data):
         """ Add a full barcode in the buffer, with needed formatting commands
         """
-        command = '{default}{origin}{barcode_format}{data}'.format(
+        command = u'{default}{origin}{barcode_format}{data}'.format(
             default=self._barcode_field_default(barcode_format),
             origin=self._field_origin(right, down),
             barcode_format=self._barcode_format(barcodeType, barcode_format),
@@ -399,9 +399,9 @@ class Zpl2(object):
                 graphic_format[ARG_ROUNDING], minimum=0, maximum=8)
 
         # Generate the ZPL II command
-        command = '{origin}{data}{stop}'.format(
+        command = u'{origin}{data}{stop}'.format(
             origin=self._field_origin(right, down),
-            data='^GB' + self._generate_arguments(arguments, graphic_format),
+            data=u'^GB' + self._generate_arguments(arguments, graphic_format),
             stop=self._field_data_stop(),
         )
         self._write_command(command)
@@ -421,9 +421,9 @@ class Zpl2(object):
                 graphic_format[ARG_THICKNESS], minimum=2, maximum=4095)
 
         # Generate the ZPL II command
-        command = '{origin}{data}{stop}'.format(
+        command = u'{origin}{data}{stop}'.format(
             origin=self._field_origin(right, down),
-            data='^GC' + self._generate_arguments(arguments, graphic_format),
+            data=u'^GC' + self._generate_arguments(arguments, graphic_format),
             stop=self._field_data_stop(),
         )
         self._write_command(command)
@@ -475,11 +475,11 @@ class Zpl2(object):
 
         ret = []
         for pixel_row in pixels:
-            pixel_string = ''
+            pixel_string = u''
             for xpos in range(0, len(pixel_row), 4):
                 bits = pixel_row[xpos:xpos + 4]
                 byte_value = get_byte_val(bits, 4)
-                pixel_string += '%X' % byte_value
+                pixel_string += u'%X' % byte_value
             ret.append(pixel_string)
 
         return ret
@@ -503,16 +503,16 @@ class Zpl2(object):
         total_bytes = bytes_per_row * img_size_y
 
         graphic_image_command = (
-            '^GFA,%(total_bytes)s,%(total_bytes)s,%(bytes_per_row)s,'
-            '%(ascii_data)s' % {
-                'total_bytes': total_bytes,
-                'bytes_per_row': bytes_per_row,
-                'ascii_data': ''.join(ascii_data),
+            u'^GFA,%(total_bytes)s,%(total_bytes)s,%(bytes_per_row)s,'
+            u'%(ascii_data)s' % {
+                u'total_bytes': total_bytes,
+                u'bytes_per_row': bytes_per_row,
+                u'ascii_data': u''.join(ascii_data),
             }
         )
 
         # Generate the ZPL II command
-        command = '{origin}{data}{stop}'.format(
+        command = u'{origin}{data}{stop}'.format(
             origin=self._field_origin(right, down),
             data=graphic_image_command,
             stop=self._field_data_stop(),
