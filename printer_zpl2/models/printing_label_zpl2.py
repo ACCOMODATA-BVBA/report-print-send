@@ -168,6 +168,11 @@ class PrintingLabelZpl2(models.Model):
         self.ensure_one()
         label_data = zpl2.Zpl2()
 
+        def do_label_end():
+            if self.restore_saved_config:
+                label_data.configuration_update(zpl2.CONF_RECALL_LAST_SAVED)
+            label_data.label_end()
+
         multilabel_index = 0
 
         for record in records:
@@ -192,22 +197,20 @@ class PrintingLabelZpl2(models.Model):
                     label_data, record, page_number=page_number,
                     page_count=page_count)
 
+                # Restore printer's configuration and end of the label
+                # before we can advance to the next length of labels
+                if multilabel_index + 1 == self.multilabel_count:
+                    do_label_end()
+
                 if self.multilabel:
                     multilabel_index = (
                         multilabel_index + 1) % self.multilabel_count
 
-                # Restore printer's configuration and end the label
-                if multilabel_index == 0:
-                    if self.restore_saved_config:
-                        label_data.configuration_update(
-                            zpl2.CONF_RECALL_LAST_SAVED)
-                    label_data.label_end()
+        # ensure the label is properly closed in case we finished printing
+        # without completely filling the label length
+        if multilabel_index + 1 != self.multilabel_count:
+            do_label_end()
 
-        # ensure the label is properly closed.
-        if multilabel_index != 0:
-            if self.restore_saved_config:
-                label_data.configuration_update(zpl2.CONF_RECALL_LAST_SAVED)
-            label_data.label_end()
         return label_data.output()
 
     @api.multi
