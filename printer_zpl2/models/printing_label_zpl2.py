@@ -16,7 +16,7 @@ from openerp.tools.safe_eval import safe_eval
 _logger = logging.getLogger(__name__)
 
 try:
-    import zpl2
+    from . import zpl2
 except ImportError:
     _logger.debug('Cannot `import zpl2`.')
 
@@ -119,7 +119,7 @@ class PrintingLabelZpl2(models.Model):
                     })
             elif component.component_type == 'graphic':
                 pil_image = Image.open(io.BytesIO(
-                    base64.b64decode(component.graphic_image or data)))
+                    base64.b64decode(component.graphic_image or data))).convert('RGB')
                 if component.width and component.height:
                     pil_image = pil_image.resize(
                         (component.width, component.height))
