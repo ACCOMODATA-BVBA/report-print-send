@@ -11,12 +11,12 @@ class PrintRecordLabel(models.TransientModel):
 
     printer_id = fields.Many2one(
         comodel_name='printing.printer', string='Printer', required=True,
-        help='Printer used to print the labels.')
+        ondelete='cascade', help='Printer used to print the labels.')
     label_id = fields.Many2one(
         comodel_name='printing.label.zpl2', string='Label', required=True,
         domain=lambda self: [
             ('model_id.model', '=', self.env.context.get('active_model'))],
-        help='Label to print.')
+        ondelete='cascade', help='Label to print.')
 
     @api.model
     def default_get(self, fields_list):
