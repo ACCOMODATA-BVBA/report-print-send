@@ -2,12 +2,13 @@
 # Copyright (C) 2016 SYLEAM (<http://www.syleam.fr>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-import time
 import datetime
 import logging
+import time
+
 from odoo import api, exceptions, fields, models
-from odoo.tools.translate import _
 from odoo.tools.safe_eval import safe_eval
+from odoo.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
@@ -184,12 +185,12 @@ class PrintingLabelZpl2(models.Model):
                     label_data.label_encoding()
 
                 origin_x = (
-                    self.origin_x + self.multilabel_offset_x
-                    * multilabel_index
+                        self.origin_x + self.multilabel_offset_x
+                        * multilabel_index
                 )
                 origin_y = (
-                    self.origin_y + self.multilabel_offset_y
-                    * multilabel_index
+                        self.origin_y + self.multilabel_offset_y
+                        * multilabel_index
                 )
                 label_data.label_home(origin_x, origin_y)
 
@@ -197,18 +198,18 @@ class PrintingLabelZpl2(models.Model):
                     label_data, record, page_number=page_number,
                     page_count=page_count)
 
+                if self.multilabel:
+                    multilabel_index = \
+                        (multilabel_index + 1) % self.multilabel_count
+
                 # Restore printer's configuration and end of the label
                 # before we can advance to the next length of labels
-                if multilabel_index + 1 == self.multilabel_count:
+                if multilabel_index == 0:
                     do_label_end()
-
-                if self.multilabel:
-                    multilabel_index = (
-                        multilabel_index + 1) % self.multilabel_count
 
         # ensure the label is properly closed in case we finished printing
         # without completely filling the label length
-        if multilabel_index != self.multilabel_count:
+        if multilabel_index != 0:
             do_label_end()
 
         return label_data.output()
