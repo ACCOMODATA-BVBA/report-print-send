@@ -208,7 +208,7 @@ class PrintingLabelZpl2(models.Model):
 
         # ensure the label is properly closed in case we finished printing
         # without completely filling the label length
-        if multilabel_index + 1 != self.multilabel_count:
+        if multilabel_index != self.multilabel_count:
             do_label_end()
 
         return label_data.output()
