@@ -2,12 +2,13 @@
 # Copyright (C) 2016 SYLEAM (<http://www.syleam.fr>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-import time
 import datetime
 import logging
+import time
+
 from odoo import api, exceptions, fields, models
-from odoo.tools.translate import _
 from odoo.tools.safe_eval import safe_eval
+from odoo.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
@@ -39,6 +40,20 @@ class PrintingLabelZpl2(models.Model):
         comodel_name='printing.label.zpl2.component', inverse_name='label_id',
         string='Label Components',
         help='Components which will be printed on the label.')
+    restore_saved_config = fields.Boolean(
+        string="Restore printer's configuration",
+        help="Restore printer's saved configuration and end of each label ",
+        default=True)
+    multilabel = fields.Boolean(
+        string='Multilabel',
+        help='Print multiple labels at once.')
+    multilabel_count = fields.Integer(
+        default=1,
+        help='Number of labels to print at once')
+    multilabel_offset_x = fields.Integer(
+        help='X coordinate offset between each occurence.')
+    multilabel_offset_y = fields.Integer(
+        help='Y coordinate offset between each occurence.')
 
     multilabel = fields.Boolean(
         string='Multilabel',
@@ -165,6 +180,11 @@ class PrintingLabelZpl2(models.Model):
         self.ensure_one()
         label_data = zpl2.Zpl2()
 
+        def do_label_end():
+            if self.restore_saved_config:
+                label_data.configuration_update(zpl2.CONF_RECALL_LAST_SAVED)
+            label_data.label_end()
+
         multilabel_index = 0
 
         for record in records:
@@ -176,12 +196,12 @@ class PrintingLabelZpl2(models.Model):
                     label_data.label_encoding()
 
                 origin_x = (
-                    self.origin_x + self.multilabel_offset_x
-                    * multilabel_index
+                        self.origin_x + self.multilabel_offset_x
+                        * multilabel_index
                 )
                 origin_y = (
-                    self.origin_y + self.multilabel_offset_y
-                    * multilabel_index
+                        self.origin_y + self.multilabel_offset_y
+                        * multilabel_index
                 )
                 label_data.label_home(origin_x, origin_y)
 
@@ -190,20 +210,19 @@ class PrintingLabelZpl2(models.Model):
                     page_count=page_count)
 
                 if self.multilabel:
-                    multilabel_index = (
-                        multilabel_index + 1) % self.multilabel_count
+                    multilabel_index = \
+                        (multilabel_index + 1) % self.multilabel_count
 
-                # Restore printer's configuration and end the label
+                # Restore printer's configuration and end of the label
+                # before we can advance to the next length of labels
                 if multilabel_index == 0:
-                    label_data.configuration_update(
-                        zpl2.CONF_RECALL_LAST_SAVED)
-                    label_data.label_end()
+                    do_label_end()
 
-        # ensure the label is properly closed.
+        # ensure the label is properly closed in case we finished printing
+        # without completely filling the label length
         if multilabel_index != 0:
-            label_data.configuration_update(
-                zpl2.CONF_RECALL_LAST_SAVED)
-            label_data.label_end()
+            do_label_end()
+
         return label_data.output()
 
     @api.multi

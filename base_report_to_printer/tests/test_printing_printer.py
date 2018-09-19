@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2016 LasLabs Inc.
+# Copyright 2017 Tecnativa.
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import tempfile
@@ -7,6 +8,9 @@ import mock
 
 from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase
+from odoo.tools import mute_logger
+
+from ..models import printing_server
 
 
 model = 'odoo.addons.base_report_to_printer.models.printing_printer'
@@ -31,6 +35,7 @@ class TestPrintingPrinter(TransactionCase):
             'location': 'Location',
             'uri': 'URI',
         }
+        self.report = self.env.ref("base_report_to_printer.action_report_1")
 
     def new_record(self):
         return self.Model.create(self.printer_vals)
@@ -55,13 +60,18 @@ class TestPrintingPrinter(TransactionCase):
         with mock.patch('%s.mkstemp' % model) as mkstemp:
             mkstemp.return_value = fd, file_name
             printer = self.new_record()
-            printer.print_document('report_name', 'content to print', 'pdf')
+            printer.print_document(
+                self.report.report_name,
+                'content to print',
+                'pdf',
+            )
             cups.Connection().printFile.assert_called_once_with(
                 printer.system_name,
                 file_name,
                 file_name,
                 options={})
 
+    @mute_logger(printing_server.__name__)
     @mock.patch('%s.cups' % server_model)
     def test_print_report_error(self, cups):
         """ It should print a report through CUPS """
@@ -72,7 +82,10 @@ class TestPrintingPrinter(TransactionCase):
             printer = self.new_record()
             with self.assertRaises(UserError):
                 printer.print_document(
-                    'report_name', 'content to print', 'pdf')
+                    self.report.report_name,
+                    'content to print',
+                    'pdf',
+                )
 
     @mock.patch('%s.cups' % server_model)
     def test_print_file(self, cups):
@@ -86,6 +99,7 @@ class TestPrintingPrinter(TransactionCase):
             file_name,
             options={})
 
+    @mute_logger(printing_server.__name__)
     @mock.patch('%s.cups' % server_model)
     def test_print_file_error(self, cups):
         """ It should print a file through CUPS """

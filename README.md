@@ -19,9 +19,9 @@ Available addons
 ----------------
 addon | version | summary
 --- | --- | ---
-[base_report_to_printer](base_report_to_printer/) | 10.0.1.0.1 | Report to printer
+[base_report_to_printer](base_report_to_printer/) | 10.0.2.0.2 | Report to printer
 [printer_tray](printer_tray/) | 10.0.1.0.0 | Report to printer - Paper tray selection
-[printer_zpl2](printer_zpl2/) | 10.0.1.1.0 | Printer ZPL II
+[printer_zpl2](printer_zpl2/) | 10.0.1.1.2 | Printer ZPL II
 
 
 Unported addons

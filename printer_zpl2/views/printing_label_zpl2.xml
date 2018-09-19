@@ -30,8 +30,9 @@
                         <field name="origin_x"/>
                         <field name="origin_y"/>
                         <field name="multilabel"/>
+                        <field name="restore_saved_config"/>
                     </group>
-                    <group>
+                    <group attrs="{'invisible': [('multilabel', '=', False)]}">
                         <field name="multilabel_count"/>
                         <field name="multilabel_offset_x"/>
                         <field name="multilabel_offset_y"/>
